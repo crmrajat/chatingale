@@ -1,0 +1,42 @@
+.chatroom {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    &__head {
+        background-color: #55dab9;
+        min-height: 5rem;
+    }
+    &__body {
+        background-color: #bada55;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    &__foot {
+        display: flex;
+        background-color: #1b9d4f;
+        min-height: 5rem;
+        padding: 1rem;
+    }
+    &__textarea {
+        resize: none;
+        flex: 9 0 auto;
+    }
+    &__button {
+        flex: 1 0 auto;
+    }
+    &__message {
+        background-color: white;
+        p {
+            margin: 0;
+            display: flex;
+            flex-flow: row nowrap;
+        }
+
+        &.is-mine {
+            p {
+                flex-flow: row-reverse nowrap;
+            }
+        }
+    }
+}
