@@ -2,15 +2,23 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    min-width: 20rem;
     &__head {
+        display: flex;
+        justify-content: center;
         background-color: #55dab9;
         min-height: 5rem;
     }
     &__body {
         background-color: #bada55;
-        flex-grow: 1;
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
+        overflow: hidden;
+        padding: 0.5rem;
+    }
+    &__wrapper {
+        overflow-y: auto;
     }
     &__foot {
         display: flex;
@@ -26,17 +34,22 @@
         flex: 1 0 auto;
     }
     &__message {
-        background-color: white;
+        display: flex;
+        align-items: center;
+        margin: 0.5rem;
         p {
+            background-color: white;
+            padding: 0.5rem;
             margin: 0;
-            display: flex;
-            flex-flow: row nowrap;
         }
 
         &.is-mine {
-            p {
-                flex-flow: row-reverse nowrap;
-            }
+            flex-flow: row-reverse nowrap;
         }
+    }
+    &__avatar {
+        margin: 0.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
     }
 }
