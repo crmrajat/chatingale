@@ -1,8 +1,8 @@
-### Run the Client
+### Run the Server
 
 ` npm start`
 
-### Setup Server - Step by Step
+### Steps used in creating the Server
 
 Initilize the project with package.json file
 `npm init -y`
