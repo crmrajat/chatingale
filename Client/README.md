@@ -1,12 +1,14 @@
-### `npm start`
+### Run the Client
+
+`npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Setup Client - Step by Step
 
-### Steps used in getting client up and running:
+Creating TypeScript Project
+`npx create-react-app chatingale --template typescript`
 
-Install scss
-npm i -s node-sass
+Install SCSS - CSS preprocessor
+`npm i -s node-sass`
