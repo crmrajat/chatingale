@@ -17,4 +17,4 @@ Install the Socket.IO - Bidirectional and event based communication between Clie
 `npm i socket.io`
 
 Build the Client project and then move that build folder to the server directory
-`npm run react-scripts build`
+`npm run build`
