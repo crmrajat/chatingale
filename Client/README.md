@@ -12,3 +12,6 @@ Creating TypeScript Project
 
 Install SCSS - CSS preprocessor
 `npm i -s node-sass`
+
+Install Socket.IO-Client
+`npm i socket.io-client`
