@@ -1,1 +1,1 @@
-[{"userId":"user3bdeaf163fb97","messageId":"id067082b092ce9","message":"Your Message 🐱‍🐉","time":"2022-05-30T13:04:08.469Z"},{"userId":"user65e765feee214","messageId":"id50da04dae86f5","message":"My Message 🐲","time":"2022-05-30T13:04:08.469Z"}]
+{"elements":{},"head":0,"tail":0}
