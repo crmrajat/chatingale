@@ -1,3 +1,9 @@
+const CLIENT_URL = 'http://localhost:9999';
+const SERVER_PORT = 3000;
+
+// fs module used to interact with the file system
+const fs = require('fs');
+
 // Importing express
 const express = require('express');
 const app = express();
@@ -6,10 +12,10 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 
-// Creating the server
+// Creating the server - name of the path that is captured on the server side
 const { Server } = require('socket.io');
 const io = new Server(server, {
-    cors: { origin: 'http://localhost:9999' },
+    cors: { origin: CLIENT_URL },
 });
 
 // To serve the static files
@@ -21,56 +27,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-// Listening to server at port 3000
-server.listen(3000, () => {
-    console.log(
-        '- - - - - - - - - - - - 🤣 Server is running on port 3000 - - - - - - - - - - - - '
-    );
-});
-
-// Socket event listener
-io.on('connection', (socket) => {
-    console.log('🎈 user connected = ', socket.id);
-    console.log('😎The queue = ', chatHistoryQueue);
-
-    // Listen for the disconnect event from client
-    socket.on('disconnect', () => {
-        console.log('user disconnected 💀');
-    });
-
-    // On receiving a message from the client
-    socket.on('chat message', (msg) => {
-        socket.broadcast.emit('chat message', msg);
-        // Add the message to the chat history
-        chatHistoryQueue.enqueue(msg);
-        console.log('🚀 ~ socket.on ~ chat message = ', msg);
-        console.log('🚀 ~ socket.on ~ log =', chatHistoryQueue);
-    });
-
-    // Listen for the typing event from the client
-    socket.on('typing', (userId) => {
-        socket.broadcast.emit('typing', userId);
-    });
-
-    // Listen for the stop typing event from the client
-    socket.on('done typing', (userId) => {
-        socket.broadcast.emit('done typing', userId);
-    });
-
-    // Listen for the import chat event from the client
-    socket.on('import chat', () => {
-        importChatHistory().then((data) => {
-            // Set the current chat history to the imported chat history
-            chatHistoryQueue = data;
-            // Send the imported chat history to all the clients
-            io.emit('chat history', enumurateChatHistory(chatHistoryQueue));
-        });
-    });
-
-    // Listen for the export chat event from the client
-    socket.on('export chat', () => {
-        exportChatHistory(chatHistoryQueue);
-    });
+// Server listens on the port
+server.listen(SERVER_PORT, () => {
+    console.log('- - -  Server is running on port ' + SERVER_PORT + ' - - - ');
 });
 
 /**
@@ -110,12 +69,7 @@ class ChatHistory {
     }
 }
 
-let chatHistoryQueue = new ChatHistory();
-
-// fs module used to interact with the file system
-const fs = require('fs');
-
-// Export the chat history to a file
+// Export the data passed (chat history) to a file
 exportChatHistory = (data) => {
     fs.writeFile('chatHistory.txt', JSON.stringify(data), (err) => {
         if (err) throw err;
@@ -167,20 +121,61 @@ enumurateChatHistory = (obj) => {
     return chatHistoryList;
 };
 
-// add key value pairs to the local storage
-const saveToLocalStorage = (key, value) => {
-    console.log('🚀 ~ saveToLocalStorage', key, value);
-    localStorage.setItem(key, JSON.stringify(value));
-};
+let chatHistoryQueue = new ChatHistory();
 
-// get key value pairs from the local storage
-const getFromLocalStorage = (key) => {
-    console.log('🚀 ~ getFromLocalStorage', key);
-    return JSON.parse(localStorage.getItem(key));
-};
+// Socket event listener
+io.on('connection', (socket) => {
+    // Listen for the user joining event from client
+    socket.on('user joined', (id) => {
+        console.log('🎈 user joined = ', id);
+        socket.broadcast.emit('user joined', id);
+    });
 
-// delete key value pairs from the local storage
-const deleteFromLocalStorage = (key) => {
-    console.log('🚀 ~ deleteFromLocalStorage', key);
-    localStorage.removeItem(key);
-};
+    // Listen for the disconnect event from client
+    socket.on('disconnect', () => {
+        console.log('disconnect 💀');
+        exportChatHistory(chatHistoryQueue);
+    });
+
+    // On receiving a message from the client
+    socket.on('chat message', (msg) => {
+        socket.broadcast.emit('chat message', msg);
+        // Add the message to the chat history queue
+        chatHistoryQueue.enqueue(msg);
+    });
+
+    // Listen for the typing event from the client
+    socket.on('typing', (userId) => {
+        socket.broadcast.emit('typing', userId);
+    });
+
+    // Listen for the stop typing event from the client
+    socket.on('done typing', (userId) => {
+        socket.broadcast.emit('done typing', userId);
+    });
+
+    // Listen for the import chat event from the client
+    socket.on('import chat', () => {
+        importChatHistory().then((data) => {
+            // Set the current chat history to the imported chat history
+            chatHistoryQueue = data;
+            // Send the imported chat history to all the clients
+            io.emit('chat history', enumurateChatHistory(chatHistoryQueue));
+        });
+    });
+
+    // Listen for the export chat event from the client - export the chat history
+    socket.on('export chat', () => {
+        exportChatHistory(chatHistoryQueue);
+    });
+
+    // Listen for the delete chat event from the client - delete the chat history
+    socket.on('delete chat', () => {
+        // Create an empty chat history
+        chatHistoryQueue = new ChatHistory();
+        // Save the empty chat history to the file
+        exportChatHistory(chatHistoryQueue);
+        // Inform all the clients that the chat history has been deleted
+        io.emit('chat history', enumurateChatHistory(chatHistoryQueue));
+    });
+});

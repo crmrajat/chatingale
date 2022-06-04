@@ -4,30 +4,52 @@ import avatar1 from '../../../src/assets/images/avatar1.png';
 import avatar2 from '../../../src/assets/images/avatar2.png';
 import { io } from 'socket.io-client';
 
-// Interface for the message props
-interface MessageComponent {
-    message: string;
-}
-interface ChatHistory {
-    userId: string;
-    messageId: string;
-    message: string;
-    time: Date;
+interface MessageDetails {
+    messageDetails: {
+        userId: string;
+        imageUrl: string;
+        messageId: string;
+        message: string;
+        time: Date;
+    };
 }
 
+// Choose random image to be the user profile picture
+const chooseImage = (list: []) => {
+    return list[Math.floor(Math.random() * list.length)];
+};
+
+// add key value pairs to the local storage
+const saveToLocalStorage = (key: string, value: any) => {
+    localStorage.setItem(key, JSON.stringify(value));
+};
+
+// get key value pairs from the local storage
+const getFromLocalStorage = (key: string) => {
+    const data = localStorage.getItem(key);
+    if (data) return JSON.parse(data);
+};
+
+// delete key value pairs from the local storage
+const deleteFromLocalStorage = (key: string) => {
+    localStorage.removeItem(key);
+};
+
 // My message component
-const MyMessage = ({ message }: MessageComponent) => (
+const MyMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message  is-mine ">
-        <img className="chatroom__avatar" src={avatar1} />
-        <p>{message}</p>
+        <img className="chatroom__avatar" src={messageDetails.imageUrl} />
+
+        <p>{messageDetails.message}</p>
     </div>
 );
 
 // Others message component
-const OthersMessage = ({ message }: MessageComponent) => (
+const OthersMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message">
-        <img className="chatroom__avatar" src={avatar2} />
-        <p>{message}</p>
+        <img className="chatroom__avatar" src={messageDetails.imageUrl} />
+
+        <p>{messageDetails.message}</p>
     </div>
 );
 
@@ -39,11 +61,13 @@ const uniqueId = (prefix: string = '') => {
 
 // Chatroom component
 const Chatroom = () => {
-    // const myId state
-    const [myId, setMyId] = useState<string | null>(uniqueId('user')); // Store the current user id
-    const [message, setMessage] = useState<string>(''); // Store the message
-    const [chatHistory, setChatHistory] = useState<any | null>([]); // store the chat history
+    const SERVER_URL = 'http://localhost:3000'; // server url and port
+    const [myId, setMyId] = useState<string | null>(null); // store the current user id
+    const [myImage, setMyImage] = useState<any | null>(null); // store the current user image
+    const [imageList, setImageList] = useState<any>(null); // store the random image list
     const [socket, setSocket] = useState<any | null>(null); // store the socket
+    const [message, setMessage] = useState<string>(''); // store the message
+    const [chatHistory, setChatHistory] = useState<any | null>([]); // store the chat history
     const chatroomBodyRef = useRef<HTMLDivElement>(null); // store the chatroom body ref
     const [typingUser, setTypingUser] = useState<{
         id: string;
@@ -52,20 +76,48 @@ const Chatroom = () => {
         id: '',
         isTyping: false,
     }); // store the typing user id and typing status
-    const [isTyping, setIsTyping] = useState<boolean>(false); // store the typing state of the other user
 
     // Mount the chatroom component
     useEffect(() => {
-        setSocket(io('http://localhost:3000')); // set the socket
-        // setMyId(uniqueId('user')); // set the current user id
+        // Get the random image list from the api
+        fetch('https://picsum.photos/v2/list').then((res) => {
+            res.json().then((data) => {
+                //  Chek if local storage has the image
+                const localStorageImage = getFromLocalStorage('image');
+                if (localStorageImage) {
+                    // Local storage has the image use it to set the image state
+                    setMyImage(localStorageImage);
+                } else {
+                    // Local storage does not have the image use the random image from the api to set the image state
+                    console.log('🚀 ~ Api for image list called ', data);
+                    const img = chooseImage(data);
+                    setImageList(data);
+                    setMyImage(img);
+                    saveToLocalStorage('image', img);
+                }
+            });
+        });
+
+        // set the socket with server url and port
+        setSocket(io(SERVER_URL));
+
+        // Check if local storage has the user id
+        const localStorageUserId = getFromLocalStorage('userId');
+        // Local storage has the user id use it to set the state
+        if (localStorageUserId) {
+            setMyId(localStorageUserId);
+        } else {
+            // Local storage does not have the user id generate new id and set the state
+            const id = uniqueId('user-');
+            setMyId(id);
+            saveToLocalStorage('userId', id);
+        }
 
         return () => {
             try {
-                console.log('🤫', 'unmounting');
                 if (socket) {
-                    console.log('👨‍❤️‍💋‍👨', 'Removing all the listeners');
-                    socket.disconnect(); // disconnect the socket
-                    socket.removeAllListeners(); // removes all listeners
+                    socket.close(); // disconnect the socket
+                    socket.removeAllListeners(); // removes all event listeners
                 }
             } catch (error) {
                 console.log(
@@ -78,29 +130,44 @@ const Chatroom = () => {
 
     useEffect(() => {
         try {
-            console.log('🧘', 'useEffect - socket');
             if (socket) {
+                // Sockt connection has been established
+                socket.on('connect', () => {
+                    // Get the previous chat history
+                    socket.emit('import chat');
+                    // Tell the server about the new user
+                    socket.emit('user joined', myId);
+                });
+
+                // Listen for other user joined event
+                socket.on('user joined', (userId: string) => {
+                    setTypingUser({
+                        id: userId,
+                        isTyping: false,
+                    });
+                    socket.emit('done typing', userId);
+                });
+
                 // Initializing the chat history
                 socket.on('chat history', (params: any) => {
-                    console.log('🚀 ~ socket.on ~ chat history', params);
                     setChatHistory(params);
                 });
 
+                // When a new message is received
                 socket.on('chat message', (msg: any) => {
-                    console.log('🚀 ~ socket.on ~ chat message', msg);
                     setChatHistory((prevState: any) => {
                         // append the new message to the chat history
                         return [...prevState, msg];
                     });
                 });
 
+                // When other user is typing
                 socket.on('typing', (userId: string) => {
-                    console.log('🚀 ~ socket.on ~ typing', userId);
                     setTypingUser({ id: userId, isTyping: true });
                 });
 
+                // When other user is not typing
                 socket.on('done typing', (userId: string) => {
-                    console.log('🚀 ~ socket.on ~ done typing', userId);
                     setTypingUser({ id: userId, isTyping: false });
                 });
             }
@@ -116,12 +183,6 @@ const Chatroom = () => {
                 chatroomBodyRef.current.scrollHeight;
         }
         if (message.length > 0) {
-            // Send the message and chat log to server
-            console.log('🤫', 'chat history use effect');
-            // socket.emit('chat message', message);
-            // socket.emit('chat history', chatHistory);
-            console.log('🧥chatHistory state = ', chatHistory);
-
             // Reset the message text area
             setMessage('');
         }
@@ -133,6 +194,13 @@ const Chatroom = () => {
         <div className="chatroom">
             <div className="chatroom__head">
                 <h1>Chatingale</h1>
+                <button
+                    onClick={() => {
+                        socket.emit('delete chat');
+                    }}
+                >
+                    Delete Chat
+                </button>
             </div>
             <div className="chatroom__body">
                 <div className="chatroom__wrapper" ref={chatroomBodyRef}>
@@ -142,7 +210,7 @@ const Chatroom = () => {
                             if (item.userId === myId) {
                                 return (
                                     <MyMessage
-                                        message={item.message}
+                                        messageDetails={item}
                                         key={index}
                                     />
                                 );
@@ -150,14 +218,13 @@ const Chatroom = () => {
 
                             return (
                                 <OthersMessage
-                                    message={item.message}
+                                    messageDetails={item}
                                     key={index}
                                 />
                             );
                         })}
-                    {typingUser?.isTyping && (
+                    {typingUser?.isTyping && typingUser.id !== myId && (
                         <div className="chatroom__message">
-                            <img className="chatroom__avatar" src={avatar2} />
                             <p>{typingUser.id + ' is typing'} </p>
                         </div>
                     )}
@@ -168,7 +235,11 @@ const Chatroom = () => {
                     className="chatroom__textarea"
                     value={message}
                     onChange={(e) => {
-                        socket.emit('typing', myId);
+                        if (e.target.value !== '') {
+                            socket.emit('typing', myId);
+                        } else {
+                            socket.emit('done typing', myId);
+                        }
                         setMessage(e.target.value);
                     }}
                 />
@@ -180,6 +251,7 @@ const Chatroom = () => {
 
                         const newMessage = {
                             userId: myId,
+                            imageUrl: myImage.download_url,
                             messageId: uniqueId(),
                             message,
                             time: new Date(),
@@ -197,20 +269,6 @@ const Chatroom = () => {
                     }}
                 >
                     Send
-                </button>
-                <button
-                    onClick={() => {
-                        socket.emit('import chat');
-                    }}
-                >
-                    Import the Chat
-                </button>
-                <button
-                    onClick={() => {
-                        socket.emit('export chat');
-                    }}
-                >
-                    Export the Chat
                 </button>
             </div>
         </div>
