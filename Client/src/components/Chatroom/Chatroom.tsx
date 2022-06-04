@@ -89,7 +89,6 @@ const Chatroom = () => {
                     setMyImage(localStorageImage);
                 } else {
                     // Local storage does not have the image use the random image from the api to set the image state
-                    console.log('🚀 ~ Api for image list called ', data);
                     const img = chooseImage(data);
                     setImageList(data);
                     setMyImage(img);
@@ -133,18 +132,19 @@ const Chatroom = () => {
             if (socket) {
                 // Sockt connection has been established
                 socket.on('connect', () => {
-                    // Get the previous chat history
-                    socket.emit('import chat');
                     // Tell the server about the new user
                     socket.emit('user joined', myId);
                 });
-
                 // Listen for other user joined event
                 socket.on('user joined', (userId: string) => {
+                    //Set the other user typing status to false - Client side
                     setTypingUser({
                         id: userId,
                         isTyping: false,
                     });
+                    // Get the previous chat history
+                    socket.emit('import chat');
+                    // Set the typing user status to false - Server side
                     socket.emit('done typing', userId);
                 });
 

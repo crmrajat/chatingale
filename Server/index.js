@@ -127,7 +127,8 @@ let chatHistoryQueue = new ChatHistory();
 io.on('connection', (socket) => {
     // Listen for the user joining event from client
     socket.on('user joined', (id) => {
-        console.log('🎈 user joined = ', id);
+        // export the chat history to a file
+        exportChatHistory(chatHistoryQueue);
         socket.broadcast.emit('user joined', id);
     });
 

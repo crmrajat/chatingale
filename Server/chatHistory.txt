@@ -1,1 +1,1 @@
-{"elements":{"0":{"userId":"user-685faa4d3fc54","imageUrl":"https://picsum.photos/id/1014/6016/4000","messageId":"id40286564b24e6","message":"hello","time":"2022-06-04T14:00:33.576Z"},"1":{"userId":"user-10d8792a9f7a8","imageUrl":"https://picsum.photos/id/1016/3844/2563","messageId":"idc0ab4afdadf78","message":"hi there","time":"2022-06-04T14:00:38.773Z"}},"head":0,"tail":2}
+{"elements":{},"head":0,"tail":0}
