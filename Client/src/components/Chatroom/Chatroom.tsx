@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import './Chatroom.scss';
-import avatar1 from '../../../src/assets/images/avatar1.png';
-import avatar2 from '../../../src/assets/images/avatar2.png';
 import { io } from 'socket.io-client';
 
 interface MessageDetails {
@@ -39,8 +37,12 @@ const deleteFromLocalStorage = (key: string) => {
 const MyMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message  is-mine ">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
-
-        <p>{messageDetails.message}</p>
+        {/* <p className="my__message">{messageDetails.message}</p> */}
+        <div>
+            <p className="font-large flex_row reverse">{'You'}</p>
+            <p className="my__message">{messageDetails.message}</p>
+            <p className="flex_row font-small">{'10:30 am'}</p>
+        </div>
     </div>
 );
 
@@ -48,8 +50,11 @@ const MyMessage = ({ messageDetails }: MessageDetails) => (
 const OthersMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
-
-        <p>{messageDetails.message}</p>
+        <div>
+            <p className="font-large">{'Rajat Bora'}</p>
+            <p className="other__message">{messageDetails.message}</p>
+            <p className="flex_row reverse font-small">{'10:30 am'}</p>
+        </div>
     </div>
 );
 
