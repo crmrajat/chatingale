@@ -1,1 +1,19 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url(./assets/fonts/Poppins/Poppins-Regular.ttf);
+}
+@font-face {
+    font-family: 'Caveat';
+    src: url(./assets/fonts/Caveat/Caveat-Regular.ttf);
+}
 
+:root {
+    --primary-color: #fed9b7;
+    --secondary-color: #023047;
+    --tertiary-color: #f07167;
+    --font-color-light: #ffffff;
+    --font-color-dark: #000000;
+    --font-size: 1rem;
+    --font-family-body: Poppins;
+    --font-family-heading: Poppins;
+}
