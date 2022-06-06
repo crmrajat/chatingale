@@ -41,7 +41,7 @@ const MyMessage = ({ messageDetails }: MessageDetails) => (
         <div>
             <p className="font-large flex_row reverse">{'You'}</p>
             <p className="my__message">{messageDetails.message}</p>
-            <p className="flex_row font-small">{'10:30 am'}</p>
+            <p className="my__time">{'10:30 am'}</p>
         </div>
     </div>
 );
@@ -53,7 +53,7 @@ const OthersMessage = ({ messageDetails }: MessageDetails) => (
         <div>
             <p className="font-large">{'Rajat Bora'}</p>
             <p className="other__message">{messageDetails.message}</p>
-            <p className="flex_row reverse font-small">{'10:30 am'}</p>
+            <p className="other__time">{'10:30 am'}</p>
         </div>
     </div>
 );
