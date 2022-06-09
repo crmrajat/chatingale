@@ -1,10 +1,18 @@
+import { useState } from 'react';
 import './App.scss';
 import Chatroom from './components/Chatroom/Chatroom';
+import User from './components/User/User';
 
 function App() {
+    const [showChatroom, setShowChatroom] = useState(false); //Toggle between the chat room and the user form
+
     return (
         <div className="app">
-            <Chatroom></Chatroom>
+            {showChatroom ? (
+                <Chatroom />
+            ) : (
+                <User props={{ setShowChatroom: setShowChatroom }} />
+            )}
         </div>
     );
 }

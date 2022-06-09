@@ -24,8 +24,10 @@
         flex-direction: column;
         overflow: hidden;
         padding: 0.5rem;
-        p {
+        p,
+        pre {
             margin: 0;
+            font-family: var(--font-family-body);
         }
     }
 
