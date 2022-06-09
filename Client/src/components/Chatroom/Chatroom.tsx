@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import './Chatroom.scss';
 import { io } from 'socket.io-client';
+import {
+    saveToLocalStorage,
+    getFromLocalStorage,
+    deleteFromLocalStorage,
+} from '../../Utilities/localStorage';
 
 interface MessageDetails {
     messageDetails: {
         userId: string;
+        name: string;
         imageUrl: string;
         messageId: string;
         message: string;
@@ -17,22 +23,6 @@ const chooseImage = (list: []) => {
     return list[Math.floor(Math.random() * list.length)];
 };
 
-// add key value pairs to the local storage
-const saveToLocalStorage = (key: string, value: any) => {
-    localStorage.setItem(key, JSON.stringify(value));
-};
-
-// get key value pairs from the local storage
-const getFromLocalStorage = (key: string) => {
-    const data = localStorage.getItem(key);
-    if (data) return JSON.parse(data);
-};
-
-// delete key value pairs from the local storage
-const deleteFromLocalStorage = (key: string) => {
-    localStorage.removeItem(key);
-};
-
 // My message component
 const MyMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message  is-mine ">
@@ -40,8 +30,8 @@ const MyMessage = ({ messageDetails }: MessageDetails) => (
         {/* <p className="my__message">{messageDetails.message}</p> */}
         <div>
             <p className="font-large flex_row reverse">{'You'}</p>
-            <p className="my__message">{messageDetails.message}</p>
-            <p className="flex_row font-small">{'10:30 am'}</p>
+            <pre className="my__message">{messageDetails.message}</pre>
+            <p className="my__time">{'10:30 am'}</p>
         </div>
     </div>
 );
@@ -51,9 +41,9 @@ const OthersMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
         <div>
-            <p className="font-large">{'Rajat Bora'}</p>
-            <p className="other__message">{messageDetails.message}</p>
-            <p className="flex_row reverse font-small">{'10:30 am'}</p>
+            <p className="font-large">{messageDetails.name}</p>
+            <pre className="other__message">{messageDetails.message}</pre>
+            <p className="other__time">{'10:30 am'}</p>
         </div>
     </div>
 );
@@ -68,6 +58,7 @@ const uniqueId = (prefix: string = '') => {
 const Chatroom = () => {
     const SERVER_URL = 'http://localhost:3000'; // server url and port
     const [myId, setMyId] = useState<string | null>(null); // store the current user id
+    const [myName, setMyName] = useState<string | null>(null); // store the current user name
     const [myImage, setMyImage] = useState<any | null>(null); // store the current user image
     const [imageList, setImageList] = useState<any>(null); // store the random image list
     const [socket, setSocket] = useState<any | null>(null); // store the socket
@@ -76,9 +67,11 @@ const Chatroom = () => {
     const chatroomBodyRef = useRef<HTMLDivElement>(null); // store the chatroom body ref
     const [typingUser, setTypingUser] = useState<{
         id: string;
+        name: string;
         isTyping: boolean;
     } | null>({
         id: '',
+        name: '',
         isTyping: false,
     }); // store the typing user id and typing status
 
@@ -117,6 +110,9 @@ const Chatroom = () => {
             saveToLocalStorage('userId', id);
         }
 
+        // Get name from local storage and set to myName state
+        setMyName(getFromLocalStorage('name'));
+
         return () => {
             try {
                 if (socket) {
@@ -138,19 +134,21 @@ const Chatroom = () => {
                 // Sockt connection has been established
                 socket.on('connect', () => {
                     // Tell the server about the new user
-                    socket.emit('user joined', myId);
+                    socket.emit('user joined', { myId, myName });
                 });
                 // Listen for other user joined event
-                socket.on('user joined', (userId: string) => {
+                socket.on('user joined', (data: any) => {
                     //Set the other user typing status to false - Client side
+
                     setTypingUser({
-                        id: userId,
+                        id: data.myId,
+                        name: data.myName,
                         isTyping: false,
                     });
                     // Get the previous chat history
                     socket.emit('import chat');
                     // Set the typing user status to false - Server side
-                    socket.emit('done typing', userId);
+                    socket.emit('done typing', { myId, myName });
                 });
 
                 // Initializing the chat history
@@ -167,13 +165,21 @@ const Chatroom = () => {
                 });
 
                 // When other user is typing
-                socket.on('typing', (userId: string) => {
-                    setTypingUser({ id: userId, isTyping: true });
+                socket.on('typing', (data: any) => {
+                    setTypingUser({
+                        id: data.myId,
+                        name: data.myName,
+                        isTyping: true,
+                    });
                 });
 
                 // When other user is not typing
-                socket.on('done typing', (userId: string) => {
-                    setTypingUser({ id: userId, isTyping: false });
+                socket.on('done typing', (data: any) => {
+                    setTypingUser({
+                        id: data.myId,
+                        name: data.myName,
+                        isTyping: false,
+                    });
                 });
             }
         } catch (error) {
@@ -209,7 +215,8 @@ const Chatroom = () => {
             </div>
             <div className="chatroom__body">
                 <div className="chatroom__wrapper" ref={chatroomBodyRef}>
-                    <p>{'My Name is ' + myId}</p>
+                    <p>{'My Id is ' + myId}</p>
+                    <p>{'My Name is ' + myName}</p>
                     {chatHistory &&
                         chatHistory.map((item: any, index: number) => {
                             if (item.userId === myId) {
@@ -230,7 +237,7 @@ const Chatroom = () => {
                         })}
                     {typingUser?.isTyping && typingUser.id !== myId && (
                         <div className="chatroom__message">
-                            <p>{typingUser.id + ' is typing'} </p>
+                            <p>{typingUser.name + ' is typing'} </p>
                         </div>
                     )}
                 </div>
@@ -241,9 +248,9 @@ const Chatroom = () => {
                     value={message}
                     onChange={(e) => {
                         if (e.target.value !== '') {
-                            socket.emit('typing', myId);
+                            socket.emit('typing', { myId, myName });
                         } else {
-                            socket.emit('done typing', myId);
+                            socket.emit('done typing', { myId, myName });
                         }
                         setMessage(e.target.value);
                     }}
@@ -251,20 +258,21 @@ const Chatroom = () => {
                 <button
                     className="chatroom__button"
                     onClick={() => {
-                        // Empty message guard
-                        if (message.length < 1) return null;
+                        //    message was empty or only white spaces
+                        if (!message.trim() || message.length < 1) return null;
 
                         const newMessage = {
                             userId: myId,
+                            name: myName,
                             imageUrl: myImage.download_url,
                             messageId: uniqueId(),
-                            message,
+                            message: message.trim(),
                             time: new Date(),
                         };
 
                         // Send the message to the server
                         socket.emit('chat message', newMessage);
-                        socket.emit('done typing', myId);
+                        socket.emit('done typing', { myId, myName });
 
                         // Append the message to the chat history
                         setChatHistory((prevState: any) => {

@@ -24,10 +24,20 @@
         flex-direction: column;
         overflow: hidden;
         padding: 0.5rem;
+        p,
+        pre {
+            margin: 0;
+            font-family: var(--font-family-body);
+        }
     }
 
     &__wrapper {
         overflow-y: auto;
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+        scrollbar-width: none; /* Firefox */
+        &::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+        }
     }
 
     &__foot {
@@ -48,23 +58,31 @@
 
     &__message {
         display: flex;
-        align-items: center;
-        margin: 0.5rem;
+        margin: 0.5rem 6rem 0.5rem 0;
         color: var(--primary-color);
-
         .other__message {
+            display: flex;
+            justify-content: center;
             color: var(--font-color-dark);
             background-color: var(--primary-color);
             border-radius: 0px 16px 16px 16px;
             font-size: 1rem;
-            padding: 1rem;
-            margin: 0;
+            padding: 0.8rem 1rem;
+        }
+        .other__time {
+            display: flex;
+            flex-direction: row-reverse;
+            font-size: 0.8rem;
+            padding: 0 1rem;
         }
 
         &.is-mine {
             flex-flow: row-reverse nowrap;
+            margin: 0.5rem 0 0.5rem 6rem;
 
             .my__message {
+                display: flex;
+                justify-content: center;
                 color: var(--primary-color);
                 background-color: var(--secondary-color);
                 border-radius: 16px 0px 16px 16px;
@@ -73,6 +91,12 @@
                 padding: 1rem;
                 margin: 0;
             }
+            .my__time {
+                display: flex;
+                flex-direction: row;
+                font-size: 0.8rem;
+                padding: 0 1rem;
+            }
         }
     }
 
@@ -80,7 +104,7 @@
         width: 4rem;
         height: 4rem;
         margin: 1rem;
-        border: 2px solid var(--primary-color);
+        outline: 2px solid var(--primary-color);
         border-radius: 100%;
     }
 }

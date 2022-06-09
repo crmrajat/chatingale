@@ -126,10 +126,10 @@ let chatHistoryQueue = new ChatHistory();
 // Socket event listener
 io.on('connection', (socket) => {
     // Listen for the user joining event from client
-    socket.on('user joined', (id) => {
+    socket.on('user joined', (data) => {
         // export the chat history to a file
         exportChatHistory(chatHistoryQueue);
-        socket.broadcast.emit('user joined', id);
+        socket.broadcast.emit('user joined', data);
     });
 
     // Listen for the disconnect event from client
@@ -146,13 +146,13 @@ io.on('connection', (socket) => {
     });
 
     // Listen for the typing event from the client
-    socket.on('typing', (userId) => {
-        socket.broadcast.emit('typing', userId);
+    socket.on('typing', (data) => {
+        socket.broadcast.emit('typing', data);
     });
 
     // Listen for the stop typing event from the client
-    socket.on('done typing', (userId) => {
-        socket.broadcast.emit('done typing', userId);
+    socket.on('done typing', (data) => {
+        socket.broadcast.emit('done typing', data);
     });
 
     // Listen for the import chat event from the client
