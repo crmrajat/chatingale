@@ -18,6 +18,19 @@ interface MessageDetails {
     };
 }
 
+// Find the current typing user from the typingUsers array
+const findTypingUserIndex = (id: any, list: any) => {
+    if (list) {
+        return list.findIndex((user: any) => user.id === id);
+    }
+    return -1;
+};
+// Generate random unique id
+const uniqueId = (prefix: string = '') => {
+    if (prefix !== '') return prefix + Math.random().toString(16).slice(2);
+    return 'id' + Math.random().toString(16).slice(2);
+};
+
 // Choose random image to be the user profile picture
 const chooseImage = (list: []) => {
     return list[Math.floor(Math.random() * list.length)];
@@ -48,12 +61,6 @@ const OthersMessage = ({ messageDetails }: MessageDetails) => (
     </div>
 );
 
-// Generate random unique id
-const uniqueId = (prefix: string = '') => {
-    if (prefix !== '') return prefix + Math.random().toString(16).slice(2);
-    return 'id' + Math.random().toString(16).slice(2);
-};
-
 // Chatroom component
 const Chatroom = () => {
     const SERVER_URL = 'http://localhost:3000'; // server url and port
@@ -65,15 +72,7 @@ const Chatroom = () => {
     const [message, setMessage] = useState<string>(''); // store the message
     const [chatHistory, setChatHistory] = useState<any | null>([]); // store the chat history
     const chatroomBodyRef = useRef<HTMLDivElement>(null); // store the chatroom body ref
-    const [typingUser, setTypingUser] = useState<{
-        id: string;
-        name: string;
-        isTyping: boolean;
-    } | null>({
-        id: '',
-        name: '',
-        isTyping: false,
-    }); // store the typing user id and typing status
+    const [connectedUsers, setConnectedUsers] = useState<any | null>(null); // store the list of  typing user id and typing status];
 
     // Mount the chatroom component
     useEffect(() => {
@@ -138,17 +137,10 @@ const Chatroom = () => {
                 });
                 // Listen for other user joined event
                 socket.on('user joined', (data: any) => {
-                    //Set the other user typing status to false - Client side
-
-                    setTypingUser({
-                        id: data.myId,
-                        name: data.myName,
-                        isTyping: false,
-                    });
+                    //Set the connected user - Client side
+                    setConnectedUsers(data);
                     // Get the previous chat history
                     socket.emit('import chat');
-                    // Set the typing user status to false - Server side
-                    socket.emit('done typing', { myId, myName });
                 });
 
                 // Initializing the chat history
@@ -166,20 +158,12 @@ const Chatroom = () => {
 
                 // When other user is typing
                 socket.on('typing', (data: any) => {
-                    setTypingUser({
-                        id: data.myId,
-                        name: data.myName,
-                        isTyping: true,
-                    });
+                    setConnectedUsers(data);
                 });
 
                 // When other user is not typing
                 socket.on('done typing', (data: any) => {
-                    setTypingUser({
-                        id: data.myId,
-                        name: data.myName,
-                        isTyping: false,
-                    });
+                    setConnectedUsers(data);
                 });
             }
         } catch (error) {
@@ -193,11 +177,6 @@ const Chatroom = () => {
             chatroomBodyRef.current.scrollTop =
                 chatroomBodyRef.current.scrollHeight;
         }
-        if (message.length > 0) {
-            // Reset the message text area
-            setMessage('');
-        }
-
         return () => {};
     }, [chatHistory]);
 
@@ -235,11 +214,22 @@ const Chatroom = () => {
                                 />
                             );
                         })}
-                    {typingUser?.isTyping && typingUser.id !== myId && (
-                        <div className="chatroom__message">
-                            <p>{typingUser.name + ' is typing'} </p>
-                        </div>
-                    )}
+                    {
+                        // Typing users
+                        connectedUsers &&
+                            connectedUsers.map((user: any, index: number) => {
+                                if (user.id !== myId && user.isTyping) {
+                                    return (
+                                        <div
+                                            className="chatroom__typing"
+                                            key={index}
+                                        >
+                                            <p>{user.name} is typing...</p>
+                                        </div>
+                                    );
+                                }
+                            })
+                    }
                 </div>
             </div>
             <div className="chatroom__foot">
@@ -279,6 +269,9 @@ const Chatroom = () => {
                             // append the new message to the chat history
                             return [...prevState, newMessage];
                         });
+
+                        // Reset the message text area
+                        setMessage('');
                     }}
                 >
                     Send

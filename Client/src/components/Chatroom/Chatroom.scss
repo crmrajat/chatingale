@@ -107,6 +107,12 @@
         outline: 2px solid var(--primary-color);
         border-radius: 100%;
     }
+    &__typing {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid var(--primary-color);
+    }
 }
 
 .flex_row {
