@@ -6,6 +6,7 @@ import {
     getFromLocalStorage,
     deleteFromLocalStorage,
 } from '../../Utilities/localStorage';
+import menuIcon from '../../assets/icons/menu.svg';
 
 interface MessageDetails {
     messageDetails: {
@@ -18,13 +19,18 @@ interface MessageDetails {
     };
 }
 
-// Find the current typing user from the typingUsers array
-const findTypingUserIndex = (id: any, list: any) => {
-    if (list) {
-        return list.findIndex((user: any) => user.id === id);
-    }
-    return -1;
+// Convert the date to hh:mm: a format
+const convertTime = (data: Date) => {
+    const d = new Date(data);
+    return (
+        (d.getHours() > 12 ? d.getHours() - 12 : d.getHours()) +
+        ':' +
+        d.getMinutes() +
+        ' ' +
+        (d.getHours() >= 12 ? 'PM' : 'AM')
+    );
 };
+
 // Generate random unique id
 const uniqueId = (prefix: string = '') => {
     if (prefix !== '') return prefix + Math.random().toString(16).slice(2);
@@ -40,11 +46,10 @@ const chooseImage = (list: []) => {
 const MyMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message  is-mine ">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
-        {/* <p className="my__message">{messageDetails.message}</p> */}
         <div>
             <p className="font-large flex_row reverse">{'You'}</p>
             <pre className="my__message">{messageDetails.message}</pre>
-            <p className="my__time">{'10:30 am'}</p>
+            <p className="my__time">{convertTime(messageDetails.time)}</p>
         </div>
     </div>
 );
@@ -56,7 +61,7 @@ const OthersMessage = ({ messageDetails }: MessageDetails) => (
         <div>
             <p className="font-large">{messageDetails.name}</p>
             <pre className="other__message">{messageDetails.message}</pre>
-            <p className="other__time">{'10:30 am'}</p>
+            <p className="other__time">{convertTime(messageDetails.time)}</p>
         </div>
     </div>
 );
@@ -71,8 +76,8 @@ const Chatroom = () => {
     const [socket, setSocket] = useState<any | null>(null); // store the socket
     const [message, setMessage] = useState<string>(''); // store the message
     const [chatHistory, setChatHistory] = useState<any | null>([]); // store the chat history
-    const chatroomBodyRef = useRef<HTMLDivElement>(null); // store the chatroom body ref
     const [connectedUsers, setConnectedUsers] = useState<any | null>(null); // store the list of  typing user id and typing status];
+    const chatroomBodyRef = useRef<HTMLDivElement>(null); // store the chatroom body ref
 
     // Mount the chatroom component
     useEffect(() => {
@@ -182,20 +187,68 @@ const Chatroom = () => {
 
     return (
         <div className="chatroom">
-            <div className="chatroom__head">
+            <nav className="chatroom__head">
                 <h1>Chatingale</h1>
-                <button
-                    onClick={() => {
-                        socket.emit('delete chat');
-                    }}
-                >
-                    Delete Chat
-                </button>
-            </div>
+
+                <div className="chatroom__options">
+                    <img
+                        src={menuIcon}
+                        alt="menu icon"
+                        className="chatroom__icon"
+                        onClick={() => {
+                            document
+                                .getElementsByClassName(
+                                    'chatroom__dropdown__wrapper'
+                                )[0]
+                                .classList.toggle('hide');
+                            document
+                                .getElementsByClassName('chatroom__dropdown')[0]
+                                .classList.toggle('hide');
+                            document
+                                .getElementsByClassName('chatroom__icon')[0]
+                                .classList.toggle('active');
+                        }}
+                    />
+
+                    <div className="chatroom__dropdown hide">
+                        <button
+                            onClick={() => {
+                                socket.emit('delete chat');
+                            }}
+                        >
+                            Delete Chat
+                        </button>
+                        <button
+                            onClick={() => {
+                                deleteFromLocalStorage('name');
+                                deleteFromLocalStorage('userId');
+                                deleteFromLocalStorage('image');
+                                window.location.reload();
+                            }}
+                        >
+                            Leave Chatroom
+                        </button>
+                    </div>
+                    <div
+                        className="chatroom__dropdown__wrapper hide"
+                        onClick={() => {
+                            document
+                                .getElementsByClassName(
+                                    'chatroom__dropdown__wrapper'
+                                )[0]
+                                .classList.add('hide');
+                            document
+                                .getElementsByClassName('chatroom__dropdown')[0]
+                                .classList.add('hide');
+                            document
+                                .getElementsByClassName('chatroom__icon')[0]
+                                .classList.remove('active');
+                        }}
+                    ></div>
+                </div>
+            </nav>
             <div className="chatroom__body">
                 <div className="chatroom__wrapper" ref={chatroomBodyRef}>
-                    <p>{'My Id is ' + myId}</p>
-                    <p>{'My Name is ' + myName}</p>
                     {chatHistory &&
                         chatHistory.map((item: any, index: number) => {
                             if (item.userId === myId) {

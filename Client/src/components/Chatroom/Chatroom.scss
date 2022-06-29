@@ -2,17 +2,73 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    min-width: 20rem;
+    min-width: 20em;
+    font-size: 12px;
 
     &__head {
         display: flex;
+        height: 4em;
         justify-content: center;
+        align-items: center;
         background-color: var(--tertiary-color);
-        min-height: 5rem;
         font-family: var(--font-family-heading);
 
         h1 {
-            font-size: 3rem;
+            font-size: 3em;
+            margin: 0;
+        }
+    }
+
+    &__options {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    &__icon {
+        position: relative;
+        display: block;
+        z-index: 2;
+        width: 2em;
+        height: 2em;
+        padding: 1em;
+        &:hover {
+            background-color: var(--primary-color);
+        }
+        &.active {
+            background-color: var(--primary-color);
+        }
+    }
+
+    &__dropdown__wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+    }
+
+    &__dropdown {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--primary-color);
+        top: 0;
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--font-color-dark);
+            border: none;
+            padding: 0.5em;
+            margin: 0.5em;
+            font-size: 1em;
+            font-family: var(--font-family-body);
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            &:hover {
+                background-color: var(--tertiary-color);
+            }
         }
     }
 
@@ -23,11 +79,12 @@
         flex-grow: 1;
         flex-direction: column;
         overflow: hidden;
-        padding: 0.5rem;
+        padding: 0.5em;
         p,
         pre {
             margin: 0;
             font-family: var(--font-family-body);
+            white-space: pre-wrap;
         }
     }
 
@@ -42,76 +99,101 @@
 
     &__foot {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
         background-color: var(--tertiary-color);
-        min-height: 5rem;
-        padding: 1rem;
     }
 
     &__textarea {
+        flex: 1;
+        height: 3em;
+        font-size: 1em;
+        border-radius: 1em;
+        margin: 0.6em;
+        padding: 0.5em 1em;
+        border: none;
         resize: none;
-        flex: 9 0 auto;
+        outline: none;
+        font-family: var(--font-family-body);
     }
 
     &__button {
-        flex: 1 0 auto;
+        background-color: var(--primary-color);
+        color: var(--font-color-dark);
+        border: none;
+        padding: 0.5em;
+        margin: 0.5em;
+        font-size: 1em;
+        font-family: var(--font-family-body);
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            background-color: var(--tertiary-color);
+        }
     }
 
     &__message {
         display: flex;
-        margin: 0.5rem 6rem 0.5rem 0;
+        margin: 1em 10em 1em 0em;
         color: var(--primary-color);
         .other__message {
             display: flex;
             justify-content: center;
             color: var(--font-color-dark);
             background-color: var(--primary-color);
-            border-radius: 0px 16px 16px 16px;
-            font-size: 1rem;
-            padding: 0.8rem 1rem;
+            border-radius: 0em 1em 1em 1em;
+            padding: 0.5em 1em;
+            font-size: 1em;
+            margin: 0;
         }
         .other__time {
             display: flex;
             flex-direction: row-reverse;
-            font-size: 0.8rem;
-            padding: 0 1rem;
+            font-size: 0.8em;
+            padding: 0 1em;
         }
 
         &.is-mine {
             flex-flow: row-reverse nowrap;
-            margin: 0.5rem 0 0.5rem 6rem;
+            margin: 1em 0em 1em 10em;
 
             .my__message {
                 display: flex;
                 justify-content: center;
-                color: var(--primary-color);
-                background-color: var(--secondary-color);
-                border-radius: 16px 0px 16px 16px;
-                border: 2px solid var(--primary-color);
-                font-size: 1rem;
-                padding: 1rem;
+                color: var(--font-color-dark);
+                background-color: var(--primary-color);
+                border-radius: 1em 0em 1em 1em;
+                padding: 0.5em 1em;
+                font-size: 1em;
                 margin: 0;
             }
             .my__time {
                 display: flex;
                 flex-direction: row;
-                font-size: 0.8rem;
-                padding: 0 1rem;
+                font-size: 0.8em;
+                padding: 0 1em;
             }
         }
     }
 
     &__avatar {
-        width: 4rem;
-        height: 4rem;
-        margin: 1rem;
+        width: 3.3em;
+        height: 3.3em;
+        margin: 1em;
         outline: 2px solid var(--primary-color);
         border-radius: 100%;
     }
     &__typing {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        border: 1px solid var(--primary-color);
+        p {
+            padding: 0.5em;
+            background-color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            display: flex;
+            font-size: 1em;
+            margin: 1em 2em;
+            border-radius: 0em 1em 1em 1em;
+        }
     }
 }
 
@@ -127,11 +209,15 @@
 }
 
 .font-small {
-    font-size: 0.8rem;
+    font-size: 0.8em;
 }
 .font-medium {
-    font-size: 1rem;
+    font-size: 1em;
 }
 .font-large {
-    font-size: 1.2rem;
+    font-size: 1.2em;
+}
+
+.hide {
+    display: none;
 }
