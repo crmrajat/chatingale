@@ -121,20 +121,36 @@ enumurateChatHistory = (obj) => {
     return chatHistoryList;
 };
 
-let chatHistoryQueue = new ChatHistory();
+// Find the index of the user in the connected users array
+findUserIndex = (id, users) => {
+    return users.findIndex((user) => user.id === id);
+};
+
+let chatHistoryQueue = new ChatHistory(); // Chat history queue
+let connectedUsers = []; // Array of connected users
 
 // Socket event listener
 io.on('connection', (socket) => {
     // Listen for the user joining event from client
     socket.on('user joined', (data) => {
+        console.log('😼User joined: ', data.myName);
+        // Remove the current user from the list of connected users - to avoid multiple users with the same id
+        connectedUsers = connectedUsers.filter((user) => user.id !== data.myId);
+        // Add the current user to the list of connected users
+        connectedUsers.push({
+            id: data.myId,
+            name: data.myName,
+            isTyping: false,
+        });
         // export the chat history to a file
         exportChatHistory(chatHistoryQueue);
-        socket.broadcast.emit('user joined', data);
+        // Send the list of connected users to all the clients
+        io.emit('user joined', connectedUsers);
     });
 
     // Listen for the disconnect event from client
     socket.on('disconnect', () => {
-        console.log('disconnect 💀');
+        console.log('💀 User disconnected ');
         exportChatHistory(chatHistoryQueue);
     });
 
@@ -147,12 +163,18 @@ io.on('connection', (socket) => {
 
     // Listen for the typing event from the client
     socket.on('typing', (data) => {
-        socket.broadcast.emit('typing', data);
+        const index = findUserIndex(data.myId, connectedUsers);
+        connectedUsers[index].isTyping = true;
+        // send the list of connected users to all the clients -  update the typing status
+        io.emit('typing', connectedUsers);
     });
 
     // Listen for the stop typing event from the client
     socket.on('done typing', (data) => {
-        socket.broadcast.emit('done typing', data);
+        const index = findUserIndex(data.myId, connectedUsers);
+        connectedUsers[index].isTyping = false;
+        // send the list of connected users to all the clients -  update the typing status
+        io.emit('done typing', connectedUsers);
     });
 
     // Listen for the import chat event from the client
