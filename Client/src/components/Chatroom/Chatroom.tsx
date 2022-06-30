@@ -46,10 +46,10 @@ const chooseImage = (list: []) => {
 const MyMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message  is-mine ">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
-        <div>
+        <div className="chatroom__width">
             <p className="font-large flex_row reverse">{'You'}</p>
-            <pre className="my__message">{messageDetails.message}</pre>
             <p className="my__time">{convertTime(messageDetails.time)}</p>
+            <pre className="my__message">{messageDetails.message}</pre>
         </div>
     </div>
 );
@@ -58,7 +58,7 @@ const MyMessage = ({ messageDetails }: MessageDetails) => (
 const OthersMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
-        <div>
+        <div className="chatroom__width">
             <p className="font-large">{messageDetails.name}</p>
             <pre className="other__message">{messageDetails.message}</pre>
             <p className="other__time">{convertTime(messageDetails.time)}</p>
@@ -289,6 +289,7 @@ const Chatroom = () => {
                 <textarea
                     className="chatroom__textarea"
                     value={message}
+                    maxLength={2000}
                     onChange={(e) => {
                         if (e.target.value !== '') {
                             socket.emit('typing', { myId, myName });

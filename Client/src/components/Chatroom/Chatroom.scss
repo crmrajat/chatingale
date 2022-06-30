@@ -3,7 +3,7 @@
     flex-direction: column;
     height: 100vh;
     min-width: 20em;
-    font-size: 12px;
+    font-size: 13px;
 
     &__head {
         display: flex;
@@ -80,14 +80,19 @@
         flex-direction: column;
         overflow: hidden;
         padding: 0.5em;
+
         p,
         pre {
             margin: 0;
+            // display: block;
             font-family: var(--font-family-body);
             white-space: pre-wrap;
+            word-wrap: break-word;
         }
     }
-
+    &__width {
+        max-width: 50em;
+    }
     &__wrapper {
         overflow-y: auto;
         -ms-overflow-style: none; /* Internet Explorer 10+ */
@@ -118,27 +123,30 @@
     }
 
     &__button {
+        border: none;
+        padding: 1em;
+        height: 4em;
+        border-radius: 1em;
+        margin-right: 0.5em;
+        font-size: 1em;
         background-color: var(--primary-color);
         color: var(--font-color-dark);
-        border: none;
-        padding: 0.5em;
-        margin: 0.5em;
-        font-size: 1em;
         font-family: var(--font-family-body);
         cursor: pointer;
         transition: all 0.2s ease-in-out;
+
         &:hover {
             background-color: var(--tertiary-color);
+            outline: 1px solid var(--primary-color);
         }
     }
 
     &__message {
         display: flex;
-        margin: 1em 10em 1em 0em;
+        margin: 1em 20em 1em 0em;
         color: var(--primary-color);
         .other__message {
-            display: flex;
-            justify-content: center;
+            display: inline-block;
             color: var(--font-color-dark);
             background-color: var(--primary-color);
             border-radius: 0em 1em 1em 1em;
@@ -147,19 +155,19 @@
             margin: 0;
         }
         .other__time {
-            display: flex;
-            flex-direction: row-reverse;
+            // display: flex;
+            // flex-direction: row-reverse;
+            display: inline-block;
             font-size: 0.8em;
-            padding: 0 1em;
+            padding-left: 2em;
         }
 
         &.is-mine {
             flex-flow: row-reverse nowrap;
-            margin: 1em 0em 1em 10em;
+            margin: 1em 0em 1em 20em;
 
             .my__message {
-                display: flex;
-                justify-content: center;
+                display: inline-block;
                 color: var(--font-color-dark);
                 background-color: var(--primary-color);
                 border-radius: 1em 0em 1em 1em;
@@ -168,10 +176,11 @@
                 margin: 0;
             }
             .my__time {
-                display: flex;
-                flex-direction: row;
+                // display: flex;
+                // flex-direction: row;
+                display: inline-block;
                 font-size: 0.8em;
-                padding: 0 1em;
+                padding-right: 2em;
             }
         }
     }
