@@ -46,10 +46,13 @@ const chooseImage = (list: []) => {
 const MyMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message  is-mine ">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
-        <div className="chatroom__width">
+        <div className="message__width">
             <p className="font-large flex_row reverse">{'You'}</p>
-            <p className="my__time">{convertTime(messageDetails.time)}</p>
-            <pre className="my__message">{messageDetails.message}</pre>
+
+            <pre className="my__message">
+                {messageDetails.message}
+                <p className="time">{convertTime(messageDetails.time)}</p>
+            </pre>
         </div>
     </div>
 );
@@ -58,10 +61,12 @@ const MyMessage = ({ messageDetails }: MessageDetails) => (
 const OthersMessage = ({ messageDetails }: MessageDetails) => (
     <div className="chatroom__message">
         <img className="chatroom__avatar" src={messageDetails.imageUrl} />
-        <div className="chatroom__width">
+        <div className="message__width">
             <p className="font-large">{messageDetails.name}</p>
-            <pre className="other__message">{messageDetails.message}</pre>
-            <p className="other__time">{convertTime(messageDetails.time)}</p>
+            <pre className="other__message">
+                {messageDetails.message}
+                <p className="time">{convertTime(messageDetails.time)}</p>
+            </pre>
         </div>
     </div>
 );
@@ -84,7 +89,7 @@ const Chatroom = () => {
         // Get the random image list from the api
         fetch('https://picsum.photos/v2/list').then((res) => {
             res.json().then((data) => {
-                //  Chek if local storage has the image
+                //  Check if local storage has the image
                 const localStorageImage = getFromLocalStorage('image');
                 if (localStorageImage) {
                     // Local storage has the image use it to set the image state
@@ -135,7 +140,7 @@ const Chatroom = () => {
     useEffect(() => {
         try {
             if (socket) {
-                // Sockt connection has been established
+                // Socket connection has been established
                 socket.on('connect', () => {
                     // Tell the server about the new user
                     socket.emit('user joined', { myId, myName });
@@ -187,149 +192,160 @@ const Chatroom = () => {
 
     return (
         <div className="chatroom">
-            <nav className="chatroom__head">
-                <h1>Chatingale</h1>
+            <div className="chatroom__width">
+                <nav className="chatroom__head">
+                    <h1>Chatingale</h1>
 
-                <div className="chatroom__options">
-                    <img
-                        src={menuIcon}
-                        alt="menu icon"
-                        className="chatroom__icon"
-                        onClick={() => {
-                            document
-                                .getElementsByClassName(
-                                    'chatroom__dropdown__wrapper'
-                                )[0]
-                                .classList.toggle('hide');
-                            document
-                                .getElementsByClassName('chatroom__dropdown')[0]
-                                .classList.toggle('hide');
-                            document
-                                .getElementsByClassName('chatroom__icon')[0]
-                                .classList.toggle('active');
-                        }}
-                    />
+                    <div className="chatroom__options">
+                        <img
+                            src={menuIcon}
+                            alt="menu icon"
+                            className="chatroom__icon"
+                            onClick={() => {
+                                document
+                                    .getElementsByClassName(
+                                        'chatroom__dropdown__wrapper'
+                                    )[0]
+                                    .classList.toggle('hide');
+                                document
+                                    .getElementsByClassName(
+                                        'chatroom__dropdown'
+                                    )[0]
+                                    .classList.toggle('hide');
+                                document
+                                    .getElementsByClassName('chatroom__icon')[0]
+                                    .classList.toggle('active');
+                            }}
+                        />
 
-                    <div className="chatroom__dropdown hide">
-                        <button
+                        <div className="chatroom__dropdown hide">
+                            <button
+                                onClick={() => {
+                                    socket.emit('delete chat');
+                                }}
+                            >
+                                Delete Chat
+                            </button>
+                            <button
+                                onClick={() => {
+                                    deleteFromLocalStorage('name');
+                                    deleteFromLocalStorage('userId');
+                                    deleteFromLocalStorage('image');
+                                    window.location.reload();
+                                }}
+                            >
+                                Leave Chatroom
+                            </button>
+                        </div>
+                        <div
+                            className="chatroom__dropdown__wrapper hide"
                             onClick={() => {
-                                socket.emit('delete chat');
+                                document
+                                    .getElementsByClassName(
+                                        'chatroom__dropdown__wrapper'
+                                    )[0]
+                                    .classList.add('hide');
+                                document
+                                    .getElementsByClassName(
+                                        'chatroom__dropdown'
+                                    )[0]
+                                    .classList.add('hide');
+                                document
+                                    .getElementsByClassName('chatroom__icon')[0]
+                                    .classList.remove('active');
                             }}
-                        >
-                            Delete Chat
-                        </button>
-                        <button
-                            onClick={() => {
-                                deleteFromLocalStorage('name');
-                                deleteFromLocalStorage('userId');
-                                deleteFromLocalStorage('image');
-                                window.location.reload();
-                            }}
-                        >
-                            Leave Chatroom
-                        </button>
+                        ></div>
                     </div>
-                    <div
-                        className="chatroom__dropdown__wrapper hide"
-                        onClick={() => {
-                            document
-                                .getElementsByClassName(
-                                    'chatroom__dropdown__wrapper'
-                                )[0]
-                                .classList.add('hide');
-                            document
-                                .getElementsByClassName('chatroom__dropdown')[0]
-                                .classList.add('hide');
-                            document
-                                .getElementsByClassName('chatroom__icon')[0]
-                                .classList.remove('active');
-                        }}
-                    ></div>
-                </div>
-            </nav>
-            <div className="chatroom__body">
-                <div className="chatroom__wrapper" ref={chatroomBodyRef}>
-                    {chatHistory &&
-                        chatHistory.map((item: any, index: number) => {
-                            if (item.userId === myId) {
+                </nav>
+                <div className="chatroom__body">
+                    <div className="chatroom__wrapper" ref={chatroomBodyRef}>
+                        {chatHistory &&
+                            chatHistory.map((item: any, index: number) => {
+                                if (item.userId === myId) {
+                                    return (
+                                        <MyMessage
+                                            messageDetails={item}
+                                            key={index}
+                                        />
+                                    );
+                                }
+
                                 return (
-                                    <MyMessage
+                                    <OthersMessage
                                         messageDetails={item}
                                         key={index}
                                     />
                                 );
-                            }
-
-                            return (
-                                <OthersMessage
-                                    messageDetails={item}
-                                    key={index}
-                                />
-                            );
-                        })}
-                    {
-                        // Typing users
-                        connectedUsers &&
-                            connectedUsers.map((user: any, index: number) => {
-                                if (user.id !== myId && user.isTyping) {
-                                    return (
-                                        <div
-                                            className="chatroom__typing"
-                                            key={index}
-                                        >
-                                            <p>{user.name} is typing...</p>
-                                        </div>
-                                    );
-                                }
-                            })
-                    }
-                </div>
-            </div>
-            <div className="chatroom__foot">
-                <textarea
-                    className="chatroom__textarea"
-                    value={message}
-                    maxLength={2000}
-                    onChange={(e) => {
-                        if (e.target.value !== '') {
-                            socket.emit('typing', { myId, myName });
-                        } else {
-                            socket.emit('done typing', { myId, myName });
+                            })}
+                        {
+                            // Typing users
+                            connectedUsers &&
+                                connectedUsers.map(
+                                    (user: any, index: number) => {
+                                        if (user.id !== myId && user.isTyping) {
+                                            return (
+                                                <div
+                                                    className="chatroom__typing"
+                                                    key={index}
+                                                >
+                                                    <p>
+                                                        {user.name} is typing...
+                                                    </p>
+                                                </div>
+                                            );
+                                        }
+                                    }
+                                )
                         }
-                        setMessage(e.target.value);
-                    }}
-                />
-                <button
-                    className="chatroom__button"
-                    onClick={() => {
-                        //    message was empty or only white spaces
-                        if (!message.trim() || message.length < 1) return null;
+                    </div>
+                </div>
+                <div className="chatroom__foot">
+                    <textarea
+                        className="chatroom__textarea"
+                        value={message}
+                        maxLength={2000}
+                        onChange={(e) => {
+                            if (e.target.value !== '') {
+                                socket.emit('typing', { myId, myName });
+                            } else {
+                                socket.emit('done typing', { myId, myName });
+                            }
+                            setMessage(e.target.value);
+                        }}
+                    />
+                    <button
+                        className="chatroom__button"
+                        onClick={() => {
+                            //    message was empty or only white spaces
+                            if (!message.trim() || message.length < 1)
+                                return null;
 
-                        const newMessage = {
-                            userId: myId,
-                            name: myName,
-                            imageUrl: myImage.download_url,
-                            messageId: uniqueId(),
-                            message: message.trim(),
-                            time: new Date(),
-                        };
+                            const newMessage = {
+                                userId: myId,
+                                name: myName,
+                                imageUrl: myImage.download_url,
+                                messageId: uniqueId(),
+                                message: message.trim(),
+                                time: new Date(),
+                            };
 
-                        // Send the message to the server
-                        socket.emit('chat message', newMessage);
-                        socket.emit('done typing', { myId, myName });
+                            // Send the message to the server
+                            socket.emit('chat message', newMessage);
+                            socket.emit('done typing', { myId, myName });
 
-                        // Append the message to the chat history
-                        setChatHistory((prevState: any) => {
-                            // append the new message to the chat history
-                            return [...prevState, newMessage];
-                        });
+                            // Append the message to the chat history
+                            setChatHistory((prevState: any) => {
+                                // append the new message to the chat history
+                                return [...prevState, newMessage];
+                            });
 
-                        // Reset the message text area
-                        setMessage('');
-                    }}
-                >
-                    Send
-                </button>
+                            // Reset the message text area
+                            setMessage('');
+                        }}
+                    >
+                        Send
+                    </button>
+                </div>
             </div>
         </div>
     );
