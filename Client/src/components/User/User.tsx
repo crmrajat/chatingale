@@ -6,15 +6,13 @@ import {
     deleteFromLocalStorage,
 } from '../../Utilities/localStorage';
 
-import background from '../../assets/background.svg';
-
 // User component
 const User = ({ props }: any) => {
     const [name, setName] = useState(''); // name of the user
 
     // Mount the User component
     useEffect(() => {
-        //  Chek if local storage has the name of the user
+        //  Check if local storage has the name of the user
         const localStorageName = getFromLocalStorage('name');
         if (localStorageName) {
             // Local storage has the name use it to set the name state

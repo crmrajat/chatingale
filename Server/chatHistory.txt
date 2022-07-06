@@ -1,1 +1,1 @@
-{"elements":{"0":{"userId":"user-ce3200d228637","name":"Chrome Normal","imageUrl":"https://picsum.photos/id/100/2500/1656","messageId":"idfa048c2b69295","message":"hello","time":"2022-06-30T20:15:57.638Z"},"1":{"userId":"user-cacaea86c861d","name":"Chrome Incognito","imageUrl":"https://picsum.photos/id/1004/5616/3744","messageId":"id569d15abe6651","message":"whats up 😍","time":"2022-06-30T20:16:10.672Z"}},"head":0,"tail":2}
+{"elements":{},"head":0,"tail":0}
