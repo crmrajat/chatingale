@@ -1,5 +1,5 @@
-const CLIENT_URL = 'http://localhost:9999';
-const SERVER_PORT = 3000;
+// const CLIENT_URL = 'http://localhost:9999';  //🔖TODO : Find the client URL
+const SERVER_PORT = process.env.PORT || 5000;
 
 // fs module used to interact with the file system
 const fs = require('fs');
@@ -15,7 +15,7 @@ const server = http.createServer(app);
 // Creating the server - name of the path that is captured on the server side
 const { Server } = require('socket.io');
 const io = new Server(server, {
-    cors: { origin: CLIENT_URL },
+    cors: { origin: '*' },
 });
 
 // To serve the static files
@@ -103,7 +103,7 @@ importChatHistory = () => {
 };
 
 // Loop through the chat history and return a list - returns an array
-enumurateChatHistory = (obj) => {
+enumerateChatHistory = (obj) => {
     // Return empty array as the chat history is empty
     if (obj.isEmpty()) return [];
 
@@ -183,7 +183,7 @@ io.on('connection', (socket) => {
             // Set the current chat history to the imported chat history
             chatHistoryQueue = data;
             // Send the imported chat history to all the clients
-            io.emit('chat history', enumurateChatHistory(chatHistoryQueue));
+            io.emit('chat history', enumerateChatHistory(chatHistoryQueue));
         });
     });
 
@@ -199,6 +199,6 @@ io.on('connection', (socket) => {
         // Save the empty chat history to the file
         exportChatHistory(chatHistoryQueue);
         // Inform all the clients that the chat history has been deleted
-        io.emit('chat history', enumurateChatHistory(chatHistoryQueue));
+        io.emit('chat history', enumerateChatHistory(chatHistoryQueue));
     });
 });
