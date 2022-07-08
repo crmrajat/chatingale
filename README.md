@@ -28,7 +28,7 @@ cd .\Client\
 npm run build
 ```
 
-Copy the build folder created inside the Client and paste it inside the Server directory
+Copy the build folder from the Client and paste it inside the Server directory
 ```
 Server
   |__ build ⬅️
