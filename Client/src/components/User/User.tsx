@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './User.scss';
 import {
     saveToLocalStorage,
     getFromLocalStorage,
-    deleteFromLocalStorage,
 } from '../../Utilities/localStorage';
 
 // User component
@@ -20,10 +19,7 @@ const User = ({ props }: any) => {
             // now navigate to the chat room 🐱
             props.setShowChatroom(true);
         }
-
-        return () => {
-            // Unmount the User component
-        };
+        return () => {};
     }, []);
 
     return (

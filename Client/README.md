@@ -1,11 +1,4 @@
-### Run the Client
-
-`npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-### Steps used in creating the Client
+### Library used in Client
 
 Creating TypeScript Project
 `npx create-react-app chatingale --template typescript`
