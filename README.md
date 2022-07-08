@@ -19,8 +19,6 @@ cd .\Server\
 npm start
 ```
 
-# Done ✅
-
 
 ## Steps for Hosting the project
 
