@@ -6,7 +6,8 @@ import {
     getFromLocalStorage,
     deleteFromLocalStorage,
 } from '../../Utilities/localStorage';
-import menuIcon from '../../assets/icons/menu.svg';
+import menuIcon from '../../assets/svg/menu.svg';
+import { changeTheme } from '../../Utilities/changeTheme';
 
 interface MessageDetails {
     messageDetails: {
@@ -86,6 +87,10 @@ const Chatroom = () => {
 
     // Mount the chatroom component
     useEffect(() => {
+        // Get the current theme form the local storage
+        const theme = getFromLocalStorage('theme');
+        changeTheme(theme);
+
         // Get the random image list from the api
         fetch('https://picsum.photos/v2/list').then((res) => {
             res.json().then((data) => {
@@ -192,7 +197,7 @@ const Chatroom = () => {
 
     return (
         <div className="chatroom">
-            <div className="chatroom__width">
+            <div className="chatroom--width">
                 <nav className="chatroom__head">
                     <h1>Chatingale</h1>
 
@@ -224,7 +229,7 @@ const Chatroom = () => {
                                     socket.emit('delete chat');
                                 }}
                             >
-                                Delete Chat
+                                Delete Chat 👀
                             </button>
                             <button
                                 onClick={() => {
@@ -234,7 +239,41 @@ const Chatroom = () => {
                                     window.location.reload();
                                 }}
                             >
-                                Leave Chatroom
+                                Leave Chatroom 🏃🏽
+                            </button>
+
+                            <button onClick={() => changeTheme('')}>
+                                Default Theme 🧁
+                            </button>
+                            <button onClick={() => changeTheme('theme-1')}>
+                                Theme 🌌
+                            </button>
+                            <button onClick={() => changeTheme('theme-2')}>
+                                Theme 🦄
+                            </button>
+                            <button onClick={() => changeTheme('theme-3')}>
+                                Theme 🥝
+                            </button>
+                            <button onClick={() => changeTheme('theme-4')}>
+                                Theme 🌺
+                            </button>
+                            <button onClick={() => changeTheme('theme-5')}>
+                                Theme 🌲
+                            </button>
+                            <button onClick={() => changeTheme('theme-6')}>
+                                Theme 🍊
+                            </button>
+                            <button onClick={() => changeTheme('theme-7')}>
+                                Theme 🍇
+                            </button>
+                            <button onClick={() => changeTheme('theme-8')}>
+                                Theme 🌼
+                            </button>
+                            <button onClick={() => changeTheme('theme-9')}>
+                                Theme 🛸
+                            </button>
+                            <button onClick={() => changeTheme('theme-10')}>
+                                Theme 🚀
                             </button>
                         </div>
                         <div
@@ -257,47 +296,41 @@ const Chatroom = () => {
                         ></div>
                     </div>
                 </nav>
-                <div className="chatroom__body">
-                    <div className="chatroom__wrapper" ref={chatroomBodyRef}>
-                        {chatHistory &&
-                            chatHistory.map((item: any, index: number) => {
-                                if (item.userId === myId) {
-                                    return (
-                                        <MyMessage
-                                            messageDetails={item}
-                                            key={index}
-                                        />
-                                    );
-                                }
-
+                <div className="chatroom__body" ref={chatroomBodyRef}>
+                    {chatHistory &&
+                        chatHistory.map((item: any, index: number) => {
+                            if (item.userId === myId) {
                                 return (
-                                    <OthersMessage
+                                    <MyMessage
                                         messageDetails={item}
                                         key={index}
                                     />
                                 );
-                            })}
-                        {
-                            // Typing users
-                            connectedUsers &&
-                                connectedUsers.map(
-                                    (user: any, index: number) => {
-                                        if (user.id !== myId && user.isTyping) {
-                                            return (
-                                                <div
-                                                    className="chatroom__typing"
-                                                    key={index}
-                                                >
-                                                    <p>
-                                                        {user.name} is typing...
-                                                    </p>
-                                                </div>
-                                            );
-                                        }
-                                    }
-                                )
-                        }
-                    </div>
+                            }
+
+                            return (
+                                <OthersMessage
+                                    messageDetails={item}
+                                    key={index}
+                                />
+                            );
+                        })}
+                    {
+                        // Typing users
+                        connectedUsers &&
+                            connectedUsers.map((user: any, index: number) => {
+                                if (user.id !== myId && user.isTyping) {
+                                    return (
+                                        <div
+                                            className="chatroom__typing"
+                                            key={index}
+                                        >
+                                            <p>{user.name} is typing...</p>
+                                        </div>
+                                    );
+                                }
+                            })
+                    }
                 </div>
                 <div className="chatroom__foot">
                     <textarea

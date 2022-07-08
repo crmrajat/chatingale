@@ -8,12 +8,13 @@
 }
 
 :root {
-    --primary-color: #fed9b7;
-    --secondary-color: #023047;
-    --tertiary-color: #f07167;
-    --font-color-light: #ffffff;
-    --font-color-mid: #808080;
-    --font-color-dark: #000000;
     --font-family-body: 'Poppins';
     --font-family-heading: 'Caveat';
+
+    --primary-color: #023047;
+    --secondary-color: #f07167;
+    --tertiary-color: #fed9b7;
+
+    --font-color-theme: #ffffff;
+    --font-color-theme-inverse: #000000;
 }

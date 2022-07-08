@@ -2,13 +2,13 @@
     display: flex;
     height: 100vh;
     width: 100vw;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     font-family: var(--font-family-body);
     justify-content: center;
 
     &__background {
-        background: url('../../assets/icons/background.svg') no-repeat;
-        border: 2em solid var(--secondary-color);
+        background: url('../../assets/svg/pattern.svg') no-repeat;
+        border: 2em solid var(--primary-color);
         background-size: auto;
         background-position: center;
         padding: 1em;
@@ -22,25 +22,12 @@
 
         h1 {
             font-size: 4em;
-            color: var(--font-color-light);
+            color: var(--font-color-theme);
             margin: 0;
             margin-bottom: 1em;
             font-weight: bold;
             font-family: var(--font-family-heading);
-
-            color: var(--font-color-light);
-
-            text-shadow: -1px 0 var(--font-color-dark),
-                0 1px var(--font-color-dark), 1px 0 var(--font-color-dark),
-                0 -1px var(--font-color-dark);
         }
-    }
-    &__placeholder {
-        flex: 1;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
     }
 
     &__body {
@@ -50,45 +37,46 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        background: var(--primary-color);
+        box-shadow: 0px 4px 12px 2px rgba(0, 0, 0, 0.25);
     }
     &__label {
         font-size: 2em;
         margin: 0;
-        color: var(--font-color-light);
-        text-shadow: -1px 0 var(--font-color-dark), 0 1px var(--font-color-dark),
-            1px 0 var(--font-color-dark), 0 -1px var(--font-color-dark);
+        color: var(--font-color-theme);
     }
     &__input {
         width: 60%;
         font-size: 1em;
         font-family: var(--font-family-body);
-        outline: none;
+        // outline: none;
         border: none;
+        outline: 1px solid var(--font-color-theme);
         border-radius: 0.6em;
         margin: 2em 0;
         padding: 0.8em 0.8em 0.8em 1em;
         transition: all 0.3s ease-in-out;
 
         &:focus {
-            outline: 2px solid var(--tertiary-color);
+            outline: 2px solid var(--secondary-color);
             transition: all 0.3s ease-in-out;
         }
     }
 
     &__button {
-        color: var(--font-color-light);
+        color: var(--font-color-theme);
         border-radius: 1em;
         padding: 1em 2em;
         outline: none;
         border: none;
         border-radius: 2em;
-        background-color: var(--tertiary-color);
         font-family: var(--font-family-body);
+        background-color: var(--secondary-color);
 
         &:hover {
+            background-color: var(--tertiary-color);
             transition: all 0.3s ease-in-out;
-            background-color: var(--primary-color);
-            color: var(--font-color-dark);
+            color: var(--font-color-theme-inverse);
         }
     }
 }
