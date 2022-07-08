@@ -29,11 +29,9 @@ const User = ({ props }: any) => {
     return (
         <div className="user">
             <div className="user__background">
-                <div className="user__placeholder">
-                    <h1>Chatingale</h1>
-                </div>
-
                 <div className="user__body">
+                    <h1>Chatingale</h1>
+
                     <label className="user__label">Enter your Name</label>
                     <input
                         className="user__input"
@@ -59,7 +57,6 @@ const User = ({ props }: any) => {
                         value="Start Now"
                     />
                 </div>
-                <div className="user__placeholder"></div>
             </div>
         </div>
     );

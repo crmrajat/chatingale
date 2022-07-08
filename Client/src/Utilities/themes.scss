@@ -1,0 +1,103 @@
+.theme {
+    transition: all 0.5s ease-in-out;
+
+    &-1 {
+        --primary-color: #1d3557;
+        --secondary-color: #457b9d;
+        --tertiary-color: #a8dadc;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-2 {
+        --primary-color: #9b5de5;
+        --secondary-color: #f15bb5;
+        --tertiary-color: #fee440;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-3 {
+        --primary-color: #006d77;
+        --secondary-color: #83c5be;
+        --tertiary-color: #edf6f9;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-4 {
+        --primary-color: #f08080;
+        --secondary-color: #f4978e;
+        --tertiary-color: #fbc4ab;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-5 {
+        --primary-color: #2d6a4f;
+        --secondary-color: #40916c;
+        --tertiary-color: #95d5b2;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-6 {
+        --primary-color: #252422;
+        --secondary-color: #eb5e28;
+        --tertiary-color: #ccc5b9;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-7 {
+        --primary-color: #231942;
+        --secondary-color: #5e548e;
+        --tertiary-color: #e0b1cb;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-8 {
+        --primary-color: #7d84b2;
+        --secondary-color: #8e9dcc;
+        --tertiary-color: #d9dbf1;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-9 {
+        --primary-color: #19242b;
+        --secondary-color: #22303a;
+        --tertiary-color: #446074;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+
+    &-10 {
+        --primary-color: #9bc1bc;
+        --secondary-color: #ed6a5a;
+        --tertiary-color: #f4f1bb;
+
+        --font-color-theme: #ffffff;
+        --font-color-theme-inverse: #000000;
+        transition: all 0.5s ease-in-out;
+    }
+}

@@ -1,14 +1,17 @@
 html,
 body,
-#root,
-.app {
+#root {
     height: 100vh;
+    width: 100vw;
     margin: 0;
-    background-color: var(--secondary-color);
+    padding: 0;
+    background-color: var(--primary-color);
+    box-sizing: border-box;
+    transition: all 0.5s ease-in-out;
 }
 
-.debugging {
-    border: 4px dashed rgb(149, 0, 194);
+.debug {
+    border: 4px solid rgba(149, 0, 194, 0.5);
 }
 
 body {
