@@ -11,6 +11,7 @@ Open terminal and navigate to the 'Client' directory and server it.
 
 ```
 cd .\Client\
+npm install
 npm start
 ```
 
@@ -18,6 +19,7 @@ Open a new terminal and navigate to the 'Server' directory and server it.
 
 ```
 cd .\Server\
+npm install
 npm start
 ```
 
