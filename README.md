@@ -31,12 +31,13 @@ npm run build
 ```
 
 Copy the build folder created inside the Client and paste it inside the Server directory
-
+```
 Server
   |__ build ⬅️
   |__ index.js
   |__ package.json
   |__ . . . 
+```
 
 Now copy the Server directory and place inside the hosting server 
 
