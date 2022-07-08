@@ -87,10 +87,6 @@ const Chatroom = () => {
 
     // Mount the chatroom component
     useEffect(() => {
-        // Get the current theme form the local storage
-        const theme = getFromLocalStorage('theme');
-        changeTheme(theme);
-
         // Get the random image list from the api
         fetch('https://picsum.photos/v2/list').then((res) => {
             res.json().then((data) => {

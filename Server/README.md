@@ -1,13 +1,9 @@
-### Run the Server
+### Library used in Server
 
-` npm start`
-
-### Steps used in creating the Server
-
-Initilize the project with package.json file
+Initialize the project with package.json file
 `npm init -y`
 
-Install Express - to create http request middlewares
+Install Express - to create http request middleware
 `npm i express`
 
 Install nodemon - automatic restart node app when file changes
