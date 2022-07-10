@@ -74,8 +74,8 @@ const OthersMessage = ({ messageDetails }: MessageDetails) => (
 
 // Chatroom component
 const Chatroom = () => {
-    // const SERVER_URL = 'http://localhost:3000'; // For local development
-    const SERVER_URL = 'https://chatingale.herokuapp.com'; // For Heroku server
+    const SERVER_URL = 'http://localhost:3000'; // For local development
+    // const SERVER_URL = 'https://chatingale.herokuapp.com'; // For Heroku server
     const [myId, setMyId] = useState<string | null>(null); // store the current user id
     const [myName, setMyName] = useState<string | null>(null); // store the current user name
     const [myImage, setMyImage] = useState<any | null>(null); // store the current user image
@@ -85,6 +85,35 @@ const Chatroom = () => {
     const [chatHistory, setChatHistory] = useState<any | null>([]); // store the chat history
     const [connectedUsers, setConnectedUsers] = useState<any | null>(null); // store the list of  typing user id and typing status];
     const chatroomBodyRef = useRef<HTMLDivElement>(null); // store the chatroom body ref
+    const chatroomMessageRef = useRef<HTMLTextAreaElement>(null); // store the chatroom message ref
+
+    // Send message to the server
+    const sendMessage = () => {
+        //    message was empty or only white spaces
+        if (!message.trim() || message.length < 1) return null;
+
+        const newMessage = {
+            userId: myId,
+            name: myName,
+            imageUrl: myImage.download_url,
+            messageId: uniqueId(),
+            message: message.trim(),
+            time: new Date(),
+        };
+
+        // Send the message to the server
+        socket.emit('chat message', newMessage);
+        socket.emit('done typing', { myId, myName });
+
+        // Append the message to the chat history
+        setChatHistory((prevState: any) => {
+            // append the new message to the chat history
+            return [...prevState, newMessage];
+        });
+
+        // Reset the message text area
+        setMessage('');
+    };
 
     // Mount the chatroom component
     useEffect(() => {
@@ -147,6 +176,7 @@ const Chatroom = () => {
                     // Tell the server about the new user
                     socket.emit('user joined', { myId, myName });
                 });
+
                 // Listen for other user joined event
                 socket.on('user joined', (data: any) => {
                     //Set the connected user - Client side
@@ -331,9 +361,17 @@ const Chatroom = () => {
                 </div>
                 <div className="chatroom__foot">
                     <textarea
+                        ref={chatroomMessageRef}
                         className="chatroom__textarea"
                         value={message}
                         maxLength={2000}
+                        onKeyDown={(e: any) => {
+                            if (e.key === 'Enter' && e.shiftKey === false) {
+                                e.preventDefault();
+                                console.log('🖐 enter was pressed ! ');
+                                sendMessage();
+                            }
+                        }}
                         onChange={(e) => {
                             if (e.target.value !== '') {
                                 socket.emit('typing', { myId, myName });
@@ -343,36 +381,7 @@ const Chatroom = () => {
                             setMessage(e.target.value);
                         }}
                     />
-                    <button
-                        className="chatroom__button"
-                        onClick={() => {
-                            //    message was empty or only white spaces
-                            if (!message.trim() || message.length < 1)
-                                return null;
-
-                            const newMessage = {
-                                userId: myId,
-                                name: myName,
-                                imageUrl: myImage.download_url,
-                                messageId: uniqueId(),
-                                message: message.trim(),
-                                time: new Date(),
-                            };
-
-                            // Send the message to the server
-                            socket.emit('chat message', newMessage);
-                            socket.emit('done typing', { myId, myName });
-
-                            // Append the message to the chat history
-                            setChatHistory((prevState: any) => {
-                                // append the new message to the chat history
-                                return [...prevState, newMessage];
-                            });
-
-                            // Reset the message text area
-                            setMessage('');
-                        }}
-                    >
+                    <button className="chatroom__button" onClick={sendMessage}>
                         Send
                     </button>
                 </div>

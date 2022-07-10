@@ -1,5 +1,7 @@
 // const CLIENT_URL = 'http://localhost:9999';  //🔖TODO : Find the client URL
-const SERVER_PORT = process.env.PORT || 5000;
+
+// const SERVER_PORT = process.env.PORT || 5000; // For Heroku deployment
+const SERVER_PORT = 3000; // For local development
 
 // fs module used to interact with the file system
 const fs = require('fs');
@@ -131,9 +133,17 @@ let connectedUsers = []; // Array of connected users
 
 // Socket event listener
 io.on('connection', (socket) => {
+    let currentUserId; // Current user id
+    let currentUserName; // Current user name
+
     // Listen for the user joining event from client
     socket.on('user joined', (data) => {
-        console.log('😼User joined: ', data.myName);
+        console.log(
+            '🐣 User Connected: ',
+            data.myName + ' - - -> ' + data.myId
+        );
+        currentUserId = data.myId;
+        currentUserName = data.myName;
         // Remove the current user from the list of connected users - to avoid multiple users with the same id
         connectedUsers = connectedUsers.filter((user) => user.id !== data.myId);
         // Add the current user to the list of connected users
@@ -150,8 +160,18 @@ io.on('connection', (socket) => {
 
     // Listen for the disconnect event from client
     socket.on('disconnect', () => {
-        console.log('💀 User disconnected ');
+        console.log(
+            '🕊️ User Disconnected: ',
+            currentUserName + ' - - -> ' + currentUserId
+        );
+
+        // Remove the current user from the list of connected users
+        connectedUsers = connectedUsers.filter(
+            (user) => user.id !== currentUserId
+        );
         exportChatHistory(chatHistoryQueue);
+
+        io.emit('done typing', connectedUsers);
     });
 
     // On receiving a message from the client

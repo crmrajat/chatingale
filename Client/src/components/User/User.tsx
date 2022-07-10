@@ -12,13 +12,14 @@ const User = ({ props }: any) => {
     // Mount the User component
     useEffect(() => {
         //  Check if local storage has the name of the user
-        const localStorageName = getFromLocalStorage('name');
-        if (localStorageName) {
+        const userName = getFromLocalStorage('name');
+        if (userName) {
             // Local storage has the name use it to set the name state
-            setName(localStorageName);
+            setName(userName);
             // now navigate to the chat room 🐱
             props.setShowChatroom(true);
         }
+
         return () => {};
     }, []);
 
