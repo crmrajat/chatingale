@@ -74,8 +74,8 @@ const OthersMessage = ({ messageDetails }: MessageDetails) => (
 
 // Chatroom component
 const Chatroom = () => {
-    const SERVER_URL = 'http://localhost:3000'; // For local development
-    // const SERVER_URL = 'https://chatingale.herokuapp.com'; // For Heroku server
+    // const SERVER_URL = 'http://localhost:3000'; // For local development ❗
+    const SERVER_URL = 'https://chatingale.herokuapp.com'; // For Heroku server ❗
     const [myId, setMyId] = useState<string | null>(null); // store the current user id
     const [myName, setMyName] = useState<string | null>(null); // store the current user name
     const [myImage, setMyImage] = useState<any | null>(null); // store the current user image
