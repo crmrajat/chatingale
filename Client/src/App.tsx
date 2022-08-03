@@ -10,7 +10,7 @@ function App() {
 
     useEffect(() => {
         // Get the current theme form the local storage
-        const theme = getFromLocalStorage('theme');
+        const theme = getFromLocalStorage('theme') || 'default';
         changeTheme(theme);
     }, []);
 
