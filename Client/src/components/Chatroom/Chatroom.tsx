@@ -117,6 +117,9 @@ const Chatroom = () => {
 
     // Mount the chatroom component
     useEffect(() => {
+        const x = deviceType();
+        console.log('🚀 ~ useEffect ~ deviceType()', x);
+
         // Get the random image list from the api
         fetch('https://picsum.photos/v2/list').then((res) => {
             res.json().then((data) => {
@@ -270,37 +273,37 @@ const Chatroom = () => {
                             </button>
 
                             <button onClick={() => changeTheme('')}>
-                                Default Theme 🧁
+                                Theme 🧁 (Default)
                             </button>
                             <button onClick={() => changeTheme('theme-1')}>
-                                Theme 🌌
-                            </button>
-                            <button onClick={() => changeTheme('theme-2')}>
-                                Theme 🦄
+                                Theme 🌌 (Blue Galaxy)
                             </button>
                             <button onClick={() => changeTheme('theme-3')}>
-                                Theme 🥝
+                                Theme 🥝 (Fruity)
                             </button>
                             <button onClick={() => changeTheme('theme-4')}>
-                                Theme 🌺
+                                Theme 🌺 (Hibiscus)
                             </button>
                             <button onClick={() => changeTheme('theme-5')}>
-                                Theme 🌲
+                                Theme 🌲(Forest)
                             </button>
                             <button onClick={() => changeTheme('theme-6')}>
-                                Theme 🍊
+                                Theme 🍊 (Tangy Dark)
                             </button>
-                            <button onClick={() => changeTheme('theme-7')}>
+                            {/* <button onClick={() => changeTheme('theme-7')}>
                                 Theme 🍇
-                            </button>
+                            </button> */}
                             <button onClick={() => changeTheme('theme-8')}>
-                                Theme 🌼
+                                Theme 🌼(Subtle Light)
                             </button>
                             <button onClick={() => changeTheme('theme-9')}>
-                                Theme 🛸
+                                Theme 🛸 (Space)
                             </button>
                             <button onClick={() => changeTheme('theme-10')}>
-                                Theme 🚀
+                                Theme 🚀 (Blast pack)
+                            </button>
+                            <button onClick={() => changeTheme('theme-2')}>
+                                Theme 🦄 (Glitch)
                             </button>
                         </div>
                         <div
@@ -391,3 +394,17 @@ const Chatroom = () => {
 };
 
 export default Chatroom;
+
+const deviceType = () => {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return 'tablet';
+    } else if (
+        /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+            ua
+        )
+    ) {
+        return 'mobile';
+    }
+    return 'desktop';
+};

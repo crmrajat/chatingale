@@ -13,22 +13,30 @@
     &--width {
         display: flex;
         flex: 1;
-        height: 100%;
+        height: 100vh;
         position: relative;
         flex-direction: column;
-        width: clamp(30em, 100%, 65em);
+        width: 100%;
+        max-width: 65em;
         box-shadow: 0px 6px 14px 4px rgba(0, 0, 0, 0.5);
     }
+
     &__head {
         display: flex;
         height: 5em;
-        position: relative;
-        width: clamp(30em, 100%, 100vw);
+        width: 100%;
+        max-width: 65em;
         justify-content: center;
         align-items: center;
         background-color: var(--secondary-color);
         font-family: var(--font-family-heading);
         box-shadow: 0px 4px 12px 2px rgba(0, 0, 0, 0.25);
+        position: sticky;
+        top: 0;
+
+        min-height: 5em;
+        position: fixed;
+        z-index: 1;
 
         h1 {
             font-size: 2.5em;
@@ -67,6 +75,7 @@
     }
 
     &__dropdown {
+        font-size: 9px;
         position: relative;
         z-index: 3;
         display: flex;
@@ -96,6 +105,8 @@
         padding: 0em 1em;
         background-color: var(--primary-color);
         overflow-y: auto;
+        position: relative;
+        padding-top: 5em;
 
         -ms-overflow-style: none; /* Internet Explorer 10+ */
         scrollbar-width: none; /* Firefox */
@@ -126,9 +137,11 @@
     &__foot {
         display: flex;
         align-items: center;
-        position: relative;
         padding: 1.5em 3em;
         background-color: var(--primary-color);
+        box-shadow: 0px 0px 12px 2px rgba(0, 0, 0, 0.25);
+        position: sticky;
+        bottom: 0;
     }
 
     &__textarea {
@@ -142,7 +155,6 @@
         resize: none;
         outline: none;
         font-family: var(--font-family-body);
-        // box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         box-shadow: 0px 4px 12px 2px rgba(0, 0, 0, 0.25);
     }
 
@@ -182,11 +194,11 @@
             float: right;
             font-size: 0.7em;
             padding: 0em 0em 0em 1em;
-            // color: var(--font-color-theme-mid);
             color: var(--primary-color);
             position: relative;
             top: 0.5em;
             left: 0.5em;
+            z-index: 0;
         }
 
         &.is-mine {
@@ -209,8 +221,10 @@
         width: 3.3em;
         height: 3.3em;
         margin: 1em;
-        outline: 2px solid var(--tertiary-color);
-        border-radius: 100%;
+        // outline: 2px solid var(--tertiary-color);
+        box-sizing: border-box;
+        border: 2px solid var(--tertiary-color);
+        border-radius: 50%;
     }
     &__typing {
         display: flex;
