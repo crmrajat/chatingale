@@ -1,7 +1,4 @@
-// const CLIENT_URL = 'http://localhost:9999';  //🔖TODO : Find the client URL
-
-const SERVER_PORT = process.env.PORT || 5000; // For Heroku deployment ❗
-// const SERVER_PORT = 3000; // For local development ❗
+const SERVER_PORT = process.env.PORT || 5000; // Heroku Server deployment ❗
 
 // fs module used to interact with the file system
 const fs = require('fs');

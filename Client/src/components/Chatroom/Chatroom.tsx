@@ -20,6 +20,20 @@ interface MessageDetails {
     };
 }
 
+const deviceType = () => {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return 'tablet';
+    } else if (
+        /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+            ua
+        )
+    ) {
+        return 'mobile';
+    }
+    return 'desktop';
+};
+
 // Convert the date to hh:mm: a format
 const convertTime = (data: Date) => {
     const d = new Date(data);
@@ -74,8 +88,8 @@ const OthersMessage = ({ messageDetails }: MessageDetails) => (
 
 // Chatroom component
 const Chatroom = () => {
-    // const SERVER_URL = 'http://localhost:3000'; // For local development ❗
-    const SERVER_URL = 'https://chatingale.herokuapp.com'; // For Heroku server ❗
+    // const SERVER_URL = 'http://localhost:5000'; // Local Server ❗
+    const SERVER_URL = 'https://chatingale.herokuapp.com'; // Heroku Server ❗
     const [myId, setMyId] = useState<string | null>(null); // store the current user id
     const [myName, setMyName] = useState<string | null>(null); // store the current user name
     const [myImage, setMyImage] = useState<any | null>(null); // store the current user image
@@ -117,9 +131,6 @@ const Chatroom = () => {
 
     // Mount the chatroom component
     useEffect(() => {
-        const x = deviceType();
-        console.log('🚀 ~ useEffect ~ deviceType()', x);
-
         // Get the random image list from the api
         fetch('https://picsum.photos/v2/list').then((res) => {
             res.json().then((data) => {
@@ -284,9 +295,9 @@ const Chatroom = () => {
                             <button onClick={() => changeTheme('theme-4')}>
                                 Theme 🌺 (Hibiscus)
                             </button>
-                            <button onClick={() => changeTheme('theme-5')}>
+                            {/* <button onClick={() => changeTheme('theme-5')}>
                                 Theme 🌲(Forest)
-                            </button>
+                            </button> */}
                             <button onClick={() => changeTheme('theme-6')}>
                                 Theme 🍊 (Tangy Dark)
                             </button>
@@ -394,17 +405,3 @@ const Chatroom = () => {
 };
 
 export default Chatroom;
-
-const deviceType = () => {
-    const ua = navigator.userAgent;
-    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
-        return 'tablet';
-    } else if (
-        /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
-            ua
-        )
-    ) {
-        return 'mobile';
-    }
-    return 'desktop';
-};
