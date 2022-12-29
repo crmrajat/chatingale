@@ -1,4 +1,5 @@
-const SERVER_PORT = process.env.PORT || 5000; // Heroku Server deployment ❗
+const SERVER_PORT = process.env.SERVER_PORT_NUMBER || 5000;
+// const SERVER_PORT = process.env.PORT || 5000; // Heroku Server deployment ❗
 
 // fs module used to interact with the file system
 const fs = require('fs');
